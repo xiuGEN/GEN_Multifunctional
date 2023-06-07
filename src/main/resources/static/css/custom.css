@@ -1,0 +1,16 @@
+
+.hiddenInput {
+    position: absolute !important;
+    top: 15px !important;
+    width: 110px !important;
+    height: 107px !important;
+    z-index: 6 !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    border-radius: 50% !important;
+    background-color: red !important;
+}
+/*
+
+    头像图片上传input属性
+*/

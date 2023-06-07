@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/static/css/style.css" rel="stylesheet" type="text/css">
+	<!--favicon-->
+	<link rel="icon" href="/static/picture/favicon.ico" type="image/png" />
+	<!--plugins-->
+	<link href="/static/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+	<link href="/static/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+	<link href="/static/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
+	<!-- Bootstrap CSS -->
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/static/css/app.css" rel="stylesheet">
+	<link href="/static/css/icons.css" rel="stylesheet">
+	<link rel="stylesheet" href="static/css/entypo.css">
+	<!-- Theme Style CSS -->
+	<link rel="stylesheet" href="/static/css/dark-theme.css" />
+	<link rel="stylesheet" href="/static/css/semi-dark.css" />
+	<link rel="stylesheet" href="/static/css/header-colors.css" />
+	<script th:src="@{static/js/jquery-1.11.0.min.js}"></script>
+	<!-- <style>
+		.progress {
+		    width: 1000px;
+		    height: 20px;
+		    border: 1px solid #000;
+		    margin: 10px;
+		}
+
+		.progress > div {
+		    width: 0px;     
+		    height: 100%;
+		    background-color: red;
+		}
+	</style> -->
+</head>
+<body>
+
+<div class="file-input theme-explorer-fas">
+	<div class="input-group file-caption-main">
+		<div class="file-caption form-control  kv-fileinput-caption" tabindex="500">
+			<span class="file-caption-icon"></span>
+			<input id="inputNumber" class="file-caption-name " onkeydown="return false;" onpaste="return false;" placeholder="选择 个文件...">
+		</div>
+		<div class="input-group-btn input-group-append">
+			<div tabindex="500" class="btn btn-info btn-file">
+				<i class="glyphicon glyphicon-folder-open"></i>&nbsp;  <span class="hidden-xs">选择 …</span>
+				<input id="dir"  type="file" name="fileinput-demo-1" />
+			</div>
+			<button class="btn btn-info" id="uploadDir" onclick="UpladFile()" ><i class="glyphicon glyphicon-upload"></i>  <span class="hidden-xs">上传</span></button>
+		</div>
+	</div>
+	<div>
+		<div class="progress" id="progress"  style="width: 100%;display:none;">
+			<div id="progressactive" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+				<span id="sr-only"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<!-- <input type="file" multiple="multiple" id="file">
+	<div class="progress">
+	    <div></div>
+	</div>
+	<button onclick="ajaxUpload()">上传</button>
+
+
+	<script>
+		function ajaxUpload() {
+		    var file = $('#file').get(0).files[0];
+		    alert($("#file"));
+		    var formdata = new FormData();
+		    formdata.append('file', file);
+		    formdata.append('file', file);
+		    $.ajax({
+		        url: '/fileUpload',
+		        type: 'post',
+		        dataType: 'json',
+		        data: formdata,
+		        processData: false,  //必须设置
+		        contentType: false,  //必须设置
+		        xhr: () => {
+		            var xhr = new XMLHttpRequest();
+		            //console.log(xhr);
+		            xhr.upload.onprogress = (e) => {
+		                console.log(e);
+		            	var progressWidth = (e.loaded / e.total) * 100 + '%';
+		                $('.progress > div').css('width', progressWidth);
+		            }
+		            return xhr;
+		        }
+		    })
+		}
+	</script> -->
+</body>
+<script type="text/javascript">
+
+// 文件上传功能
+function UpladFile() {
+    if(selectedFileNumber<1)
+        return;
+    document.getElementById("uploadDir").disabled=true;
+    document.getElementById("progress").style.display="";//显示
+    var FileController = ctx + "common/myUploadFile"; // 接收上传文件的后台地址
+    // FormData 对象
+    var form = new FormData($("#myDirUpload")[0]);//创建一个form对象
+    // XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();//创建XMLHttpRequest对象
+    xhr.open("post", FileController, true);//打开连接，(访问类型，地址，是否异步)
+    xhr.onload = function() {//请求完成后执行  里面可用
+        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+            var json = eval('(' + xhr.responseText + ')');
+            var fileId= json.fileId;
+            var filetemp=$("#fileIds").val();
+            if(filetemp != null &&  filetemp != ''){
+                $("#fileIds").val(filetemp +',' + fileId);
+            }else{
+                $("#fileIds").val(fileId);
+            }
+            alert("上传成功");//后台返回的数据
+        } else {
+            alert("Request was unsuccessful: " + xhr.status);//状态
+            //0	UNSENT (未打开),1	OPENED  (未发送),2 HEADERS_RECEIVED (已获取响应头),3	LOADING (正在下载响应体),4	DONE (请求完成)
+        }
+    };
+    xhr.upload.addEventListener("progress", progressFunction, false);//添加上传监听器方法
+    xhr.send(form);//发送请求
+}
+
+// 进度展示功能
+function progressFunction(evt) {
+    var progressBar = document.getElementById("progressactive");//获取进度条对象
+    var percentageDiv = document.getElementById("sr-only");//获取展示进度数据对象
+    if (evt.lengthComputable) {
+        var max = evt.total;//文件总大小
+        var loaded = evt.loaded;//已上传文件大小
+        console.log(max);
+        progressBar.style.width = Math.round(loaded / max * 100) + "%";
+        percentageDiv.innerHTML = Math.round(loaded / max * 100) + "%";
+        if (evt.loaded == evt.total) {
+            percentageDiv.innerHTML = "上传完成";
+        }
+    }
+}
+
+
+// 返回选中文件个数
+var fileDom = document.getElementById("fileinput-demo-1");
+
+fileDom.addEventListener("change", upload, false);
+function upload(){
+    var list = this.files;    
+    selectedFileNumber = list.length;
+}
+
+// 上传文件个数回显
+var dir = document.getElementById("dir");
+dir.addEventListener("change",function(){$("#inputNumber").val("已选中"+selectedFileNumber+"个文件");},false);
+
+</script>
+
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<!--上传框样式-->
+		<link href="/static/plugins/Drag-And-Drop/dist/imageuploadify.min.css" rel="stylesheet" />
+		<!--弹出框-->
+		<link rel="stylesheet" href="static/css/subpage.css">
+		<link rel="stylesheet" href="static/css/layui.css" media="all">
+		<!--公共部分所需css-->
+		<div th:replace="~{component/public::head}"></div>
+		<title>GEN | 文件上传</title>
+	</head>
+
+	<body>
+		<!--wrapper-->
+		<div class="wrapper">
+
+
+			<!--sidebar wrapper -->
+			<div th:replace="~{component/public::siderbar}"></div>
+			<!--end sidebar wrapper -->
+
+			<!--start header -->
+				<div th:replace="~{component/public::top}"></div>
+			<!--end header -->
+
+			<!--start page wrapper -->
+				<div id="page-wrapper" class="page-wrapper">
+					<div class="page-content">
+						<!--breadcrumb-->
+						<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+							<div class="breadcrumb-title pe-3">上传</div>
+							<div class="ps-3">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">文件上传</li>
+									</ol>
+								</nav>
+							</div>
+							<div class="ms-auto">
+								<div class="btn-group">
+									<div class="col">
+										<button  id="uploadbottom" type="button" class="btn btn-dark px-5"><i class='bx bx-cloud-upload mr-1'></i>Upload</button>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+						<!--end breadcrumb-->
+						<div class="row">
+							<div class="col-xl-9 mx-auto">
+								<h6 class="mb-0 text-uppercase">文件上传</h6>
+								<hr/>
+								<div id="card" class="card">
+									<div class="card-body">
+										<form id="fileupload" action="/upload" >
+											<input id="image-uploadify" type="file" name="files" accept="*/*" multiple>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--end row-->
+				</div>
+			</div>
+			<!--end page wrapper -->
+		</div>
+		<!--end wrapper-->
+
+
+		<!--start switcher-->
+		<div th:replace="~{component/public::change-color}"></div>
+		<!--end switcher-->
+
+
+		<div id="uploadfiles" class="layui-anim layui-anim-down" >
+			<span id="titleupload" class="outtitle">上传文件</span>
+			<svg id="closeupload" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle text-primary"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+			<br><br>
+			<div class="layui-upload">
+				<div class="layui-upload-list" style="max-width: 1000px;">
+					<table class="layui-table">
+						<colgroup>
+							<col>
+							<col width="150">
+							<col width="260">
+							<col width="150">
+						</colgroup>
+						<thead>
+						<tr><th>文件名</th>
+							<th>大小</th>
+							<th>上传进度</th>
+							<th>操作</th>
+						</tr></thead>
+						<tbody id="demoList"></tbody>
+					</table>
+				</div>
+				<button type="button" class="layui-btn" id="testListAction">开始上传</button>
+			</div>
+		</div>
+		<!--公共栏所需script-->
+		<script th:replace="~{component/public::scripts}"></script>
+		<!--上传文件图片-->
+		<script src="/static/plugins/Drag-And-Drop/dist/imageuploadify.min.js"></script> <!--imageuploadify.js控制数据的227行,上传在本页中submit()上传-->
+		<script>
+			$(document).ready(function () {
+				$('#image-uploadify').imageuploadify();
+				$('#fileupload').on("mouseover",function(){
+					if($(".imageuploadify-container").length>0)
+						$("#uploadbottom").prop("disabled",false);
+					else $("#uploadbottom").prop("disabled",true)
+				})
+			})
+		</script>
+		<!--上传操作及上传弹框-->
+		<script src="static/layui/layui.js"></script>
+		<script src="static/js/uploadui.js"></script>
+		<script src="static/js/file.js"></script>
+	</body>
+
+</html>

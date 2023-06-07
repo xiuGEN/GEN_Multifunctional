@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.FriendtableMapper">
+    <!--添加好友-->
+    <insert id="insFriend">
+        insert into friendtable(fid,inviterid,invitedid,time) value(default,#{inviterid},#{invitedid},default);
+    </insert>
+    <!--查询用户好友 -->
+    <select id="selFriends" resultType="friend">
+        select * from friendtable where invitedid = #{userid} or inviterid = #{userid};
+    </select>
+    <!--查询好友是否重复添加 -->
+    <select id="selFriendsExist" resultType="friend">
+        select * from friendtable where (invitedid = #{invitedid} and inviterid = #{inviterid}) or (invitedid  =#{inviterid} and inviterid =#{invitedid});
+    </select>
+</mapper>

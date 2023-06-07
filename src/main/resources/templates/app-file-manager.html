@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<link href="/static/css/style.css" rel="stylesheet" type="text/css">
+	<div th:replace="~{component/public::head}"></div>
+	<!-- layui CSS -->
+	<link rel="stylesheet" href="/static/css/layui.css" media="all">
+	<link rel="stylesheet" href="/static/css/subpage.css">
+	<!--公共部分所需css-->
+	<title>GEN | FileManger</title>
+	<style>
+		.search-frame{
+			padding: 12px;
+		}
+		.search-frame li{
+			margin: 5px;
+		}
+		.rightsub-list{
+			display: block;
+			position: absolute;
+			top: 0px;
+			left: 38px;
+			background-color: azure;
+			border-radius: 15%;
+			text-align: left;
+			width: 130px;
+			height: 160px;
+			text-align: center;
+			cursor: pointer;"
+		}
+		.rightsub-list li{
+			margin-top: 3px;
+			height: 35px;
+			line-height: 30px;
+			border-radius:5rem;
+		}
+		.rightsub-list li:hover{
+			background-color: #c1c1cd;
+			color: black;
+			font-weight: bold;
+		}
+ 	#search-win {
+			width: 500px;
+			height: 240px !important;
+			margin-left: 0%;
+			margin-top: 5px;
+			position: absolute;
+			z-index: 3;
+			border-radius: 10px;
+			display: none;
+			cursor: pointer;
+			background-color: azure;
+			box-shadow: 0px 0px 10px #d4d3d3;
+		}
+		.pagebar{
+			width:270px;
+			overflow: hidden;
+			display: flex;/*设为 Flex 布局以后，子元素的float、clear和vertical-align属性将失效*/
+			justify-content: center;/*项目在主轴上的对齐方式*/
+			align-items: center;/*项目在交叉轴上如何对齐*/
+		}
+		#addFile {
+			position: absolute;
+			right: 16px;
+			top: 16px;
+			margin: 0px;
+			padding: 0px;
+			opacity: 0;
+			z-index: 1;
+			height: 10%;
+			width: 88%;
+			filter: alpha(opacity=0);
+			font-size: 100px;
+		}
+		.input-group-text{
+			cursor: pointer;
+		}
+		.input-group-text:hover{
+			background-color:silver !important;
+		}
+
+	</style>
+</head>
+
+<body  style="overflow-y:scroll;">
+	<!--wrapper-->
+	<div class="wrapper">
+		<!--sidebar wrapper -->
+		<div th:replace="~{component/public::siderbar}"></div>
+		<!--end sidebar wrapper -->
+		<!--start header -->
+		<div th:replace="~{component/public::top}"></div>
+		<!--end header -->
+		<!--start page wrapper -->
+
+		<div class="page-wrapper" style="padding-top:0px">
+
+			<!--    分享弹出框-->
+			<div id="sharefiles" class="layui-anim layui-anim-scale">
+				<div class="title003">
+					<span>分享文件</span>
+					<i id="layui-icon-close03" class="layui-icon layui-icon-close"></i>
+				</div>
+				<div class="picture02">
+					<img id="avatar2" th:src="@{/static/images/maxfolder.png}" height="220" width="220"/>
+					<p id="filename2"></p>
+				</div>
+				<div class="linkinfo">
+					<p>通过链接分享<span>5分钟内有效</span></p>
+					<div class="copylink">
+						<p id="linkid">https:www.baidu.com</p>
+						<input id="hidetext" type="text">
+						<p id="hidetext1" style="display: none"></p>
+						<a onclick="copylink()" lay-active="e1">复制链接口令</a>
+					</div>
+					<nav>二维码分享待开发</nav>
+				</div>
+			</div>
+
+			<!--    查看详细信息弹窗-->
+			<div id="lookinfo" class="layui-anim layui-anim-scale">
+				<div class="title002">
+					<p id="filename"></p>
+					<p><i id="layui-icon-close02" class="layui-icon layui-icon-close"></i></p>
+				</div>
+				<div class="picture01">
+					<img id="avatar1" th:src="@{/static/images/maxfolder.png}" height="108" width="108"/>
+				</div>
+				<div class="datainfo">
+					<div class="textnum">
+						<i class="layui-icon layui-icon-about"></i>
+						<span id="filename1"></span><br>
+					</div>
+					<div id="filesize1" class="filesize"></div>
+					<p style="margin-top: 12px">
+						<i class="layui-icon layui-icon-location"></i>
+						<span>下载路径</span><br>
+						<g id="filepath1"></g>
+					</p>
+					<p style="margin-top: 12px">
+						<i class="layui-icon layui-icon-time"></i>
+						<span>创建时间</span><br>
+						<g id="uploadtime1"></g>
+					</p>
+				</div>
+			</div>
+
+			<!--  全屏挡住  -->
+			<div id="shutout" style="background-color: white;width: 100%;height: 100%;position: absolute;display: none;z-index: 3;opacity:0.6;left: 0"></div>
+
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">文件管理</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">文件管理</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end breadcrumb-->
+				<div class="row">
+					<div class="col-12 col-lg-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-grid"> <a href="javascript:;" class="btn btn-primary">+ 添加文件<input id="addFile" type="file" name="files" ref="file"/></a>
+								</div>
+								<h5 class="my-3">我的空间</h5>
+								<div class="fm-menu">
+									<div class="list-group list-group-flush">
+										<a href="javascript:;" typeName="all" class="list-group-item py-1"><i class='bx bx-folder me-2'></i><span>所有文件</span></a>
+										<a href="javascript:;" typeName="doc" class="list-group-item py-1"><i class='bx bx-file me-2'></i><span>文档</span></a>
+										<a href="javascript:;" typeName="image" class="list-group-item py-1"><i class='bx bx-image me-2'></i><span>图片</span></a>
+										<a href="javascript:;" typeName="video" class="list-group-item py-1"><i class='bx bx-video me-2'></i><span>视频</span></a>
+										<a href="javascript:;" typeName="audio" class="list-group-item py-1"><i class='bx bx-music me-2'></i><span>音乐</span></a>
+										<a href="javascript:;" typeName="package" class="list-group-item py-1"><i class='bx bx-beer me-2'></i><span>压缩包</span></a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="pagebar">
+							<nav aria-label="Page navigation example" style="font-size: 50px">
+								<ul class="pagination">
+									<li id="prebutton" class="page-item"><a class="page-link" href="javascript:;" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+									<li id="afterbutton" class="page-item"><a class="page-link" href="javascript:;" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+								</ul>
+							</nav>
+						</div>
+						<div class="card">
+							<div class="card-body">
+								<h5 class="mb-0 text-primary font-weight-bold" id="Capacity"></h5>
+								<p class="mb-0 mt-2"><span class="text-secondary">已用容量</span><span class="float-end text-primary">总容量</span>
+								</p>
+								<div class="progress mt-3" style="height:7px;">
+									<div id="imagebar" class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+									<div id="audiobar" class="progress-bar bg-warning" role="progressbar" style="width: 30%;background-color:green !important;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+									<div id="videobar" class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+									<div id="otherbar" class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+								<div class="mt-3"></div>
+								<div class="d-flex align-items-center">
+									<div class="fm-file-box bg-light-primary text-primary"><i class='bx bx-image'></i>
+									</div>
+									<div class="flex-grow-1 ms-2">
+										<h6 class="mb-0">图片</h6>
+										<p id="imageCounts" class="mb-0 text-secondary">0 files</p>
+									</div>
+									<h6 id="imageSize" class="text-primary mb-0">0 GB</h6>
+								</div>
+								<div class="d-flex align-items-center mt-3">
+									<div class="fm-file-box bg-light-success text-success"><i class='bx bxs-file-doc'></i>
+									</div>
+									<div class="flex-grow-1 ms-2">
+										<h6 class="mb-0">音频</h6>
+										<p id="audioCounts" class="mb-0 text-secondary">0 files</p>
+									</div>
+									<h6 id="audioSize" class="text-primary mb-0">0 GB</h6>
+								</div>
+								<div class="d-flex align-items-center mt-3">
+									<div class="fm-file-box bg-light-danger text-danger"><i class='bx bx-video'></i>
+									</div>
+									<div class="flex-grow-1 ms-2">
+										<h6 class="mb-0">视频</h6>
+										<p id="videoCounts" class="mb-0 text-secondary">0 files</p>
+									</div>
+									<h6 id="videoSize" class="text-primary mb-0">0 GB</h6>
+								</div>
+								<div class="d-flex align-items-center mt-3">
+									<div class="fm-file-box bg-light-warning text-warning"><i class='bx bx-image'></i>
+									</div>
+									<div class="flex-grow-1 ms-2">
+										<h6 class="mb-0">其他文件</h6>
+										<p id="fileCounts" class="mb-0 text-secondary">0 files</p>
+									</div>
+									<h6 id="fileSize" class="text-primary mb-0">0 GB</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-lg-9">
+						<div class="card">
+							<div class="card-body">
+								<div class="fm-search">
+									<div class="mb-0">
+										<div class="input-group input-group-lg">
+											<span class="input-group-text bg-transparent" ><i class='bx bx-search'></i></span>
+											&nbsp&nbsp&nbsp&nbsp
+											<button  type="button" class="btn btn-success px-5" style="background-color: #17a00e;border-color: #17a00e;border-radius: 5rem;">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+													 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+													 class="feather feather-check-circle text-primary" style="color:white !important;">
+													<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+													<polyline points="22 4 12 14.01 9 11.01"></polyline>
+												</svg>全部选择
+											</button>
+											&nbsp&nbsp&nbsp&nbsp
+											<button type="button" class="btn btn-info px-5 radius-30" style="background-color: cyan;border: solid 2px aqua;border-radius: 5rem;"><i class='bx bx-cloud-download mr-1'></i>批量下载</button>
+											&nbsp&nbsp&nbsp&nbsp
+											<button  type="button" class="btn btn-danger px-5 radius-30" style="background-color: #f41127;border-color: #f41127;border-radius: 5rem;">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+													 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+													 class="feather feather-x-circle text-primary" style="color: #f8f8f8 !important;"><circle cx="12" cy="12" r="10"></circle>
+													<line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>
+												</svg>批量删除
+											</button>
+										</div>
+										<div id="search-win" class="search-win layui-anim layui-anim-scale" >
+											<div class="search-frame">
+													<input id="search-input" name="keys" oninput="oninput01(this)" type="search" placeholder="请输入关键字" class="form-control">
+													<div class="search-line"></div>
+													<ul id="tip-frame" class="layui-anim layui-anim-fadein" style="display: block">
+														<li class="tip-list" onclick="onclick02(0)">
+															<span><i class="layui-icon layui-icon-picture"></i></span>
+															<span>图片</span>
+														</li>
+														<li class="tip-list" onclick="onclick02(1)">
+															<span><i class="layui-icon layui-icon-video"></i></span>
+															<span>视频</span>
+														</li>
+														<li class="tip-list" onclick="onclick02(2)">
+															<span><i class="layui-icon layui-icon-headset"></i></span>
+															<span>音频</span>
+														</li>
+														<li class="tip-list" onclick="onclick02(3)">
+															<span><i class="layui-icon layui-icon-export"></i></span>
+															<span>压缩文件</span>
+														</li>
+														<li class="tip-list" onclick="onclick02(4)">
+															<span><i class="layui-icon layui-icon-form"></i></span>
+															<span>文档</span>
+														</li>
+													</ul>
+													<div class="col" style="text-align: center;margin: 10px;">
+														<button id="search" type="button" class="btn btn-success px-5 radius-30">搜索</button>
+														<button id="clear" type="button" class="btn btn-warning px-5 radius-30">清除</button>
+														<button id="close" type="button" class="btn btn-danger px-5 radius-30">关闭</button>
+													</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!--文件显示区-->
+								<div class="row mt-3" id="showfiles"></div>
+
+
+								<br/>
+								<div class="d-flex align-items-center">
+									<div>
+										<h5 class="mb-0">最近的文件</h5>
+									</div>
+								</div>
+								<div class="table-responsive mt-3">
+									<table class="table table-striped table-hover table-sm mb-0">
+										<thead>
+											<tr>
+												<th>文件名 <i class='bx bx-up-arrow-alt ms-2'></i>
+												</th>
+												<th>大小</th>
+												<th>上传日期</th>
+												<th>操作</th>
+											</tr>
+										</thead>
+										<tbody id="showRecentlyfile">
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--end row-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		<!--End Back To Top Button-->
+	</div>
+	<!--end wrapper-->
+	<!--start switcher-->
+	<div th:replace="~{component/public::change-color}"></div>
+	<!--end switcher-->
+	<!--公共栏所需script-->
+	<div th:replace="~{component/public::scripts}"></div>
+	<!--上传-->
+	<script src="/static/js/GEN-manager.js"></script>
+	<script src="/static/layui/layui.js"></script>
+	<script src="/static/js/uploadui.js"></script>
+
+</body>
+</html>

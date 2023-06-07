@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.RoleUserMapper">
+    <!--通过后缀名名查找类型名-->
+    <insert id="insertRoleUser" parameterType="Roleuser">
+        insert into role_user values (${roleid},${userid});
+    </insert>
+    <select id="selRole" parameterType="int" resultType="role">
+        select * from role where roleid in (select roleid from role_user where userid =#{userid})
+    </select>
+    <select id="selAllRoles" resultType="role">
+        select * from role ;
+    </select>
+    <delete id="delUserRole" parameterType="int">
+        delete  from role_user where userid = #{userid}
+    </delete>
+</mapper>

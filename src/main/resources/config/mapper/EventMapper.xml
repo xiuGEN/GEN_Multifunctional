@@ -1,0 +1,17 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiuGEN.mapper.EventMapper"  >
+    <select id="selectEventAll" resultType="loggingEvent" >
+        select * from logging_event
+    </select>
+
+    <select id="selectEventlimit" resultType="loggingEvent" parameterType="int">
+        select * from logging_event ORDER BY timestmp DESC limit 0,#{size}
+    </select>
+
+    <select id="selectEventsByid" parameterType="long" resultType="loggingEvent" >
+        select * from logging_event where event_id=#{eventid}
+    </select>
+</mapper>

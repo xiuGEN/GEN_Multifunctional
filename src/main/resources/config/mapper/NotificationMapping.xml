@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.NotificationMapping">
+    <!--查询用户通知信息 -->
+    <select id="selNoreadNotification" resultType="notification">
+        select * from notification where touserid =#{touserid} and state = #{state}
+    </select>
+    <!--添加好友请求-->
+    <insert id="insFriendRequest">
+        insert into notification(id,title,text,type,touserid,state,fromuserid,time) value(default,#{title},#{text},#{type},#{touserid},#{state},#{fromuserid},default);
+    </insert>
+    <!--将消息状态改为已读-->
+    <update id="updataState">
+        update notification set state =#{state} where id= #{id}
+    </update>
+</mapper>

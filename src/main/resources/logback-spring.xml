@@ -1,0 +1,27 @@
+<configuration>
+    <!-- 使用Spring Boot的配置属性 -->
+    <springProperty scope="context" name="datasource.url" source="spring.datasource.url"/>
+    <springProperty scope="context" name="datasource.username" source="spring.datasource.username"/>
+    <springProperty scope="context" name="datasource.password" source="spring.datasource.password"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{5} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>com.mysql.jdbc.Driver</driverClass>
+            <url>${datasource.url}</url>
+            <user>${datasource.username}</user>
+            <password>${datasource.password}</password>
+        </connectionSource>
+    </appender>
+    <root level="info">
+        <appender-ref ref="DB" />
+        <appender-ref ref="stdout" />
+    </root>
+</configuration>

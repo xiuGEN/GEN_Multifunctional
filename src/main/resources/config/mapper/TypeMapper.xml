@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.TypeMapper">
+    <!--通过后缀名名查找类型名-->
+    <select id="selTypeBySuffix" parameterType="string" resultType="string">
+        select tname from type where tid=(select tid from filetype where suffix=#{parameter1})
+    </select>
+</mapper>

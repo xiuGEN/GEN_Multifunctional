@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.LoggingEventExceptionMapper">
+
+    <sql id="Base_Column_List">
+        event_id,i,trace_line
+    </sql>
+
+    <select id="selLoggingException" parameterType="long" resultType="loggingEventException">
+        select * from logging_event_exception where event_id=#{eventid}
+    </select>
+</mapper>

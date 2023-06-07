@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<!--公共部分所需css-->
+	<div th:replace="~{component/public::head}"></div>
+	<title>GEN | 用户信息</title>
+	<style>
+		.hiddenInput {
+			position: absolute;
+			top: 15px;
+			width: 110px;
+			height: 107px;
+			z-index: 6;
+			opacity: 0;
+			cursor: pointer;
+			border-radius: 50%;
+		}
+	</style>
+</head>
+
+<body>
+	<!--wrapper-->
+	<div class="wrapper">
+		<!--侧边栏 -->
+		<div th:replace="~{component/public::siderbar}"></div>
+		<!--顶头栏 -->
+		<div th:replace="~{component/public::top}"></div>
+		<!--页面展示 -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">用户设置</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">用户档案</li>
+							</ol>
+						</nav>
+					</div>
+
+				</div>
+				<!--end breadcrumb-->
+				<div class="container">
+					<div class="main-body">
+						<div class="row">
+							<div class="col-lg-4" style="flex: 1 0 auto;">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex flex-column align-items-center text-center">
+											<img src="/static/picture/logo_G.png" alt="Admin" id="profile-headphone" class="rounded-circle p-1 bg-primary" width="110" height="107" style="background-color:white !important;">
+											<input  ref="file" title='' type="file" accept="image/*" id="imageFile" class="hiddenInput"/>
+											<div class="mt-3">
+												<h4 id="profile-realname"></h4>
+												<p class="text-muted font-size-sm" id="profile-uname"></p>
+											<!--
+												暂时没有用处
+											<button class="btn btn-primary">Follow</button>
+											<button class="btn btn-outline-primary">Message</button>
+
+											-->
+											</div>
+										</div>
+										<hr class="my-4" />
+									<!--
+									          标题下的网址展示(暂代开发)
+											<ul class="list-group list-group-flush">
+
+													<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+														<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github me-2 icon-inline"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>Github</h6>
+														<span class="text-secondary">codervent</span>
+													</li>
+
+											</ul>
+									-->
+									</div>
+								</div>
+							</div>
+							<form id="user-profile" method="post" role="form">
+								<div class="col-lg-8" style="width:100%">
+									<div class="card">
+										<div class="card-body">
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0" >姓名</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-realname2" name="urealname"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0" >用户名</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-uname2" name="uname"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">密码</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="password" class="form-control" value="" id="profile-upassword" name="upassword"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">邮箱</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-uemail" name="uemail"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">联系电话</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-uphone" name="uphone"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">出生日期</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-ubirthdata" name="ubirthdate"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">地址</h6>
+												</div>
+												<div class="col-sm-9 text-secondary">
+													<input type="text" class="form-control" value="" id="profile-address" name="uaddress"/>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-sm-3"></div>
+												<div class="col">
+													<button id="save" type="submit" class="btn btn-success px-5" ><i class="bx bx-check-circle mr-1"></i> 保存</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!--end wrapper-->
+
+	<div th:replace="~{component/public::change-color}"></div>
+
+	<!--公共栏所需script-->
+	<script th:replace="~{component/public::scripts}"></script>
+	<!--效验-->
+	<script src="/static/js/jquery.validate.min.js"></script>
+	<script src="/static/js/none-userprofile.js"></script>
+</body>
+
+</html>

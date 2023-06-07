@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.FileInfoMapper">
+    <resultMap id="fileInfoResultMap" type="fileInfo">
+        <result property="suffix" column="suffix"></result>
+        <association property="typeName" column="suffix"  select="com.xiuGEN.mapper.TypeMapper.selTypeBySuffix"></association>
+    </resultMap>
+
+
+    <!--通过用户查找所有文件-->
+    <select id="selFilesByUid" parameterType="int" resultMap="fileInfoResultMap">
+        select * from  fileinfo where ownerId =#{parameter1} ORDER BY insertTime desc
+    </select>
+    <!--通过文件类型查找文件-->
+    <select id="selFilesByType"  resultMap="fileInfoResultMap">
+          select * from fileinfo where ownerId=#{uid} and suffix in (select suffix from filetype where tid=(select tid from type where tname =#{tname})) ORDER BY insertTime desc
+    </select>
+   <!--查找文件BY后缀名和模糊查询名-->
+    <select id="selFilesByName_filetype"  resultMap="fileInfoResultMap">
+        select * from fileinfo where ownerId=#{uid} and suffix in
+                        (select suffix from filetype where tid=(select tid from type where tname =#{tname}))
+                        and  fileName like '%${filename}%'
+        ORDER BY insertTime desc
+    </select>
+    <!--查找文件BY模糊查询名-->
+    <select id="selFilesByName"  resultMap="fileInfoResultMap">
+        select * from fileinfo where ownerId=#{uid}  and  fileName like '%${filename}%' ORDER BY insertTime desc
+    </select>
+    <!--查询最近添加的文件,前五条-->
+    <select id="selRecently" resultType="fileInfo">
+        select * from fileinfo order by insertTime desc limit 0,5;
+    </select>
+    <!--通过未标记的类型-->
+    <select id="selFilesByOther" parameterType="int" resultType="fileInfo">
+        SELECT * FROM fileinfo where ownerId =#{parameter1} and suffix  not in(select suffix from filetype)
+    </select>
+    <!--查询该用户使用空间-->
+    <select id="selSumSize" parameterType="int" resultType="int">
+        select sum(size) from fileinfo where ownerid =#{parameter1}
+    </select>
+    <!--增添文件-->
+    <insert id="insFileInfo" parameterType="fileInfo">
+        insert into fileinfo(fid,fileName,suffix,fileLocation,ownerId,size,insertTime) value(default,#{fileName},#{suffix},#{fileLocation},#{ownerId},#{size},default);
+    </insert>
+    <!--删除文件-->
+    <delete id="delFile">
+        delete from fileinfo where ownerId=#{uid} and fileName=#{fileName}
+    </delete>
+
+
+</mapper>

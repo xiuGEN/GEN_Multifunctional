@@ -1,0 +1,23 @@
+<!doctype html>
+<html >
+<head>
+	<!--公共部分所需css-->
+	<div th:replace="~{component/public::head}"></div>
+	<title>GEN| 首页</title>
+</head>
+
+	<body>
+		<div class="wrapper">
+		<!--侧边栏-->
+			<div th:replace="~{component/public::siderbar}">
+
+			</div>
+		<!--头部栏-->
+			<div th:replace="~{component/public::top}"></div>
+		<!--侧边设置换色-->
+			<div th:replace="~{component/public::change-color}"></div>
+		</div>
+		<!--公共栏所需script-->
+		<div th:replace="~{component/public::scripts}"></div>
+	</body>
+</html>

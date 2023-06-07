@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.UserMapper">
+    <!--  查询所有用户  -->
+    <select  id="selUsers" resultType="user">
+        select * from user
+    </select>
+    <!--通过用户名密码查询用户-->
+    <select id="selUserByLogin" resultType="user">
+        select * from user where uname=#{uname} and upassword=#{upassword}
+    </select>
+    <select id="selUserByUname" parameterType="String" resultType="user">
+        select * from user where uname=#{uname}
+    </select>
+    <!--通过id查询用户-->
+    <select id="selUserByuids" resultType="user">
+        select * from user where uid in (${uids})
+    </select>
+    <!--通过邮箱查找用户-->
+    <select id="selUserByEmail" resultType="user">
+        select * from user where uemail=#{uemail}
+    </select>
+    <!--是否存在该邮箱-->
+    <select id="selExist" resultType="user">
+        select * from user where ${exist} =#{existValue}
+    </select>
+    <insert id="insUser" parameterType="user">
+        insert into user(uid,uname,urealname,upicture,upassword,uemail,uphone,ubirthdate,aliopenid)
+                        value(default,#{uname},#{urealname},#{upicture},#{upassword},#{uemail},#{uphone},#{ubirthdate},#{aliopenid})
+    </insert>
+    <update id="updUser" parameterType="user">
+        update user set uname=#{uname},upassword=#{upassword},uemail=#{uemail},
+                        uphone=#{uphone},uaddress=#{uaddress},upicture=#{upicture},
+                        ubirthdate=#{ubirthdate},urealname=#{urealname},aliopenid=#{aliopenid} where uid =#{uid}
+    </update>
+</mapper>

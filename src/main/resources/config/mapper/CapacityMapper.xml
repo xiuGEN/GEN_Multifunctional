@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiuGEN.mapper.CapacityMapper">
+    <!--通过用户id获取该用户容量-->
+    <select id="selCapacityByUid" parameterType="int" resultType="capacity">
+        select * from capacity where ownerId=#{parameter1}
+    </select>
+    <update id="updateCapacityByUid" parameterType="capacity" >
+        update capacity set capacitySize =#{capacitySize} where ownerId=${ownerId}
+    </update>
+    <insert id="insertCapacityByUid" parameterType="capacity">
+        insert into capacity(cid,ownerId,capacitySize) value(default,#{ownerId},#{capacitySize})
+    </insert>
+</mapper>
